@@ -1,0 +1,196 @@
+@import '_variables.css';
+
+button{cursor: pointer;}
+
+body{
+    main{
+        margin: 0 var(--mainMargin);
+        #welcome{
+            width: 100%;
+            header{
+                display: flex;
+                flex-direction: column;
+                margin-bottom: var(--mainMargin);
+                margin-top: var(--mainMargin);
+                align-self: center;
+                justify-content: space-between;
+                h3{
+                    font-size: var(--bigHeaderDesktop);
+                    span{font-weight: 800;}
+                }
+            }
+        }
+        #restaurant_items{
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            height: auto;
+            width: 100%;
+        }
+        .items{
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 1px 2px 0 var(--colorShadow), 0 0 1px 0 var(--colorShadow) ;
+            border-radius: var(--smallRadius);
+            margin-bottom: var(--mediumMargin);
+            .card_info{
+                padding: var(--tinyPadding);
+                display: flex;
+                flex-direction: column;
+                width: 50%;
+            }
+            img{
+                width: 50%;
+                height: 12rem;
+                object-fit: cover;
+                border-radius: 0 var(--smallRadius) var(--smallRadius) 0;
+                
+            }
+        }
+    /* ********************** MODAL ********************** */
+        #myModal, #myEditModal{
+            display: none;/* Hidden by default */
+            position: fixed; /* Fixed positioning to stay in place when scrolling */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent dark background */
+            z-index: 1000; /* Make sure it’s on top of other content */
+            padding: var(--smallPadding);
+            box-shadow: 0 1px 2px 0 var(--colorShadow), 0 0 1px 0 var(--colorShadow);
+            #modal_content, #updated_modal_content{
+                
+                background-color: var(--white);
+                margin-bottom: 10rem;
+                padding: var(--smallPadding);
+                box-shadow: 0 1px 2px 0 var(--colorShadow), 0 0 1px 0 var(--colorShadow) ;
+                border-radius: var(--smallRadius);
+                display: flex;
+                flex-direction: column;
+                position: relative;
+                top: 50%; /* Start at the vertical center */
+                left: 50%; /* Start at the horizontal center */
+                transform: translate(-50%, -50%);
+                header{
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    width: 100%;
+                    margin-bottom: var(--smallMargin);
+                    h4{
+                        font-size: var(--bigHeaderMobile);
+                    }
+                    span{
+                        font-size: 4rem;
+                        text-align: right;
+                        color: var(--mainBlue);
+                        cursor: pointer;
+                    }
+                }
+                .item_fields{
+                    display: flex;
+                    flex-direction: column;
+                    margin-bottom: var(--smallMargin); 
+                    svg{
+                        display: none;
+                    }   
+                }
+                button{
+                    background-color: var(--subtleBlue);
+                    color: var(--mainBlue);
+                    width: 100%;
+                }
+                
+            }
+        }
+        
+    }
+    /* ********************** TABLET ********************** */
+    @media (min-width:800px){
+        main{
+            #welcome{
+                header{
+                    flex-direction: row;
+                }
+            }
+            #restaurant_items{
+                .items{
+                    display: flex;
+                    justify-content: space-between;
+                    width: 49%;
+                    margin-bottom: var(--mediumMargin);
+                    box-shadow: 0 1px 2px 0 var(--colorShadow), 0 0 1px 0 var(--colorShadow) ;
+                    .card_info{
+                        padding: var(--tinyPadding);
+                        display: flex;
+                        flex-direction: column;
+                    }
+                    img{
+                    width: 45%;;
+                    height: 12.5rem;
+                    object-fit: cover;
+                    
+                    }
+                }
+            }
+            /* ********************** MODAL ********************** */
+            #myModal, #myEditModal{
+                #modal_content, #updated_modal_content{
+                    flex-direction: row;
+                    flex-wrap: wrap;
+                    justify-content: space-between;
+                    width: 80%;
+                    .modal_left{
+                        width: 50%;
+                        .item_fields{
+                            width: 100%;
+                            input{
+                                width: 100%;
+                            }
+                        }
+                    }
+                    .modal_right{
+                        width: 45%;
+                        .img_upload{
+                            display: flex;
+                            flex-direction: column;
+                            svg{
+                                display: block;
+                                color: var(--mainBlue);
+                                width: 45%;
+                            }
+                        }
+                    }
+                    button{
+                        width: 50%;
+                    }
+                }
+            }
+            
+        }
+    }
+    /* ********************** DESKTOP ********************** */
+    @media (min-width:1170px){
+        main{
+            #restaurant_items{
+                .items{
+                    width: 32%;
+                }
+            }
+            #myModal, #myEditModal{
+                width: 100%;
+                position: fixed;
+                z-index: 1;
+                #modal_content, #updated_modal_content{
+                    width: 60%;
+                }
+            }
+        }
+    }
+}

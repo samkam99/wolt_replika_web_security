@@ -1,0 +1,130 @@
+@import '_variables.css';
+
+/* General body styling */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: var(--backgroundColor);
+    margin: 0;
+    padding: 0;
+    color: var(--black);
+    line-height: 1.6;
+}
+
+/* Page title */
+h1 {
+    text-align: center;
+    color: var(--black);
+    font-size: var(--bigHeaderMobile);
+    margin: var(--mainMargin) 0;
+}
+
+/* Layout container */
+.container {
+    display: flex;
+    flex-direction: column; /* Stack vertically for mobile */
+    gap: var(--mainMargin);
+    padding: var(--mainPadding);
+}
+
+/* Map container */
+#map {
+    width: 100%; /* Full width for mobile */
+    height: 50vh; /* Set height for mobile */
+    border-radius: var(--cardRadius);
+    box-shadow: 0 4px 6px var(--colorShadow);
+}
+
+/* Restaurant list container */
+#restaurant-list {
+    background-color: var(--white);
+    padding: var(--mediumPadding);
+    border-radius: var(--cardRadius);
+    box-shadow: 0 4px 6px var(--colorShadow);
+}
+
+#restaurant-list h2 {
+    font-size: var(--smallHeaderMobile);
+    color: var(--mainBlue);
+    margin-bottom: var(--smallMargin);
+    text-align: center;
+}
+
+#restaurant-list-items {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#restaurant-list-items li {
+    background-color: var(--subtleBlue);
+    margin-bottom: var(--tinyMargin);
+    padding: var(--smallPadding);
+    border-radius: var(--smallRadius);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#restaurant-list-items li:hover {
+    background-color: var(--mainBlue);
+    color: var(--white);
+}
+
+/* Back button styling */
+.back-button-container {
+    margin: 1rem;
+    text-align: left;
+}
+
+.back-button {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    color: #fff;
+    background-color: #009de0;
+    text-decoration: none;
+    border-radius: 0.5rem;
+    transition: background-color 0.3s ease;
+}
+
+.back-button:hover {
+    background-color: #007bb5;
+}
+
+/* Tablet Styles (min-width: 768px) */
+@media (min-width: 768px) {
+    .container {
+        flex-direction: row; /* Switch to row layout */
+    }
+
+    #map {
+        flex: 2; /* Take 2 parts of the space */
+        height: 60vh; /* Adjust height for tablet */
+    }
+
+    #restaurant-list {
+        flex: 1; /* Take 1 part of the space */
+    }
+
+    h1 {
+        font-size: var(--bigHeaderDesktop); /* Larger title for tablets */
+    }
+
+    #restaurant-list h2 {
+        font-size: var(--bigHeaderMobile);
+    }
+}
+
+/* Desktop Styles (min-width: 1024px) */
+@media (min-width: 1024px) {
+    .container {
+        gap: 2rem; /* Increase gap between map and list */
+    }
+
+    #map {
+        height: 70vh; /* Larger height for desktop */
+    }
+
+    #restaurant-list h2 {
+        font-size: var(--bigHeaderDesktop);
+    }
+}

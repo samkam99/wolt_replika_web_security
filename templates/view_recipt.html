@@ -1,0 +1,18 @@
+{% include "_top_logged_user.html" %}
+
+<main>
+    <div class="recipt_container">
+        <div class="recipt_info">
+            <h1>Thank you for using <span>Wolt!</span></h1>
+            <h3>A recipt was sent to your email.</h3>
+            <a href="{{ url_for('view_customer')}}">
+                <button>
+                    Back to home page
+                </button>
+            </a>
+        </div>
+    </div>
+</main>
+
+
+{% include "_bottom.html" %}

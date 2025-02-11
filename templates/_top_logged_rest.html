@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='mixhtml.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/top.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/restaurant.css') }}">
+    <script src="{{ url_for('static', filename='js/modal.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/burger_menu.js') }}" defer></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/mojocss"></script>
+    <title>
+        {{ title or "Company" }}
+    </title>
+</head>
+<body class="w-full h-100vh text-c-gray:-16">
+
+    <nav>
+        <div class="nav-left">
+            <a href="{{ url_for('view_customer')}}"><img src="{{ url_for('static', filename='img/Wolt-Logo.png')}}" alt=""></a>
+        </div>
+ 
+        <form method="GET" action="/search">
+            <input type="text" name="query" placeholder="Search" id="search" required>
+        </form>
+ 
+        
+            <div class="nav-right">
+                <div class="burger-menu" id="burger-menu">
+                    <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="currentColor"  class="icon icon-tabler icons-tabler-filled icon-tabler-user"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 2a5 5 0 1 1 -5 5l.005 -.217a5 5 0 0 1 4.995 -4.783z" /><path d="M14 14a5 5 0 0 1 5 5v1a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-1a5 5 0 0 1 5 -5h4z" /></svg>
+                </div>
+                <div class="nav-links" id="nav-links">
+                    <p>Profile:</p>
+                    <a href="{{ url_for('view_user_profile') }}">
+                        <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="currentColor"  class="icon icon-tabler icons-tabler-filled icon-tabler-user"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 2a5 5 0 1 1 -5 5l.005 -.217a5 5 0 0 1 4.995 -4.783z" /><path d="M14 14a5 5 0 0 1 5 5v1a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-1a5 5 0 0 1 5 -5h4z" /></svg>
+                            {{ user["user_name"] }}
+                            {{ user["user_last_name"] }}
+                    </a>
+ 
+                    <form method="POST" action="{{url_for('logout')}}" class="logout">
+                        <button class="log-out">
+                            Logout
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <div id="toast" class="d-flex flex-col j-content-center p-fixed w-full top-4 z-10"></div>
+

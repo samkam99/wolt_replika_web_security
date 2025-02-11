@@ -1,0 +1,137 @@
+{% include "_top_logged_rest.html" %}
+
+<main>
+    <section id="welcome">
+        <header>
+            <h3>
+                <span>
+                    Welcome back 
+                </span> 
+                {{ user["user_name"] }}
+                {{ user["user_last_name"] }}
+            </h3>
+            <button id="openBtn">Add item</button>
+        </header>
+    </section>
+
+    
+    <!-- ---------------------------- CREATE ITEM MODAL---------------------------- -->
+
+    <div id="myModal" class="modal">
+        <form id="modal_content" enctype="multipart/form-data">
+            <header>
+                <h4>Add Product</h4>
+                <span class="close">&times;</span>
+            </header>
+
+            <div class="modal_left">
+                
+                <div class="item_fields">
+                    <label for="item_title">Product name</label>
+                    <input type="text" name="item_title" id="item_title" mix-check="{{ x.REGEX_ITEM_TITLE }}">
+                </div>
+                <div class="item_fields">
+                    <label for="item_description">Product description</label>
+                    <input type="text" name="item_description" id="item_description" mix-check="{{ x.REGEX_ITEM_DESCRIPTION }}">
+                </div>
+                <div class="item_fields">
+                    <label for="item_price">Price</label>
+                    <input type="text" name="item_price" id="item_price" mix-check="{{ x.REGEX_ITEM_PRICE }}">
+                </div>
+            </div>
+            <div class="modal_right">
+                <div class="item_fields img_upload">
+                    <label for="fileUpload">
+                        <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-photo-plus"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M15 8h.01" /><path d="M12.5 21h-6.5a3 3 0 0 1 -3 -3v-12a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v6.5" /><path d="M3 16l5 -5c.928 -.893 2.072 -.893 3 0l4 4" /><path d="M14 14l1 -1c.67 -.644 1.45 -.824 2.182 -.54" /><path d="M16 19h6" /><path d="M19 16v6" /></svg>
+                    </label>
+                    <input type="file" id="fileUpload" name="item_files" required mix-check="{{ x.file }}" multiple/>
+                </div>
+            </div>
+            <button id="uploadButton" mix-post="/items" mix-data="#modal_content">
+                Upload
+            </button>
+        </form>
+    </div>
+
+    <!-- ----------------------------ITEMS---------------------------- -->
+
+
+    <section id="restaurant_items">
+        {% for item in items %}
+            <article class="items" id="item-{{ item['item_pk'] }}">
+                <div class="card_info">
+                    <h4>{{ item["item_title"] }}</h4>
+                    <p>{{ item["item_description"] }}</p>
+                    <p>{{ item["item_price"] }} kr</p>
+                    <div>
+                        <button id="openEditBtn-{{ item['item_pk'] }}" class="open-edit-btn" data-item-id="{{ item['item_pk'] }}">
+                            Edit
+                        </button>
+                        <button 
+                            title="Delete item" 
+                            mix-delete="/items/delete/{{ item['item_pk'] }}" 
+                            mix-target="#item-{{ item['item_pk'] }}" 
+                            mix-swap="outerHTML"
+                            data-item-id="{{ item['item_pk'] }}">
+                            Delete
+                        </button>
+                    </div>
+                </div>
+                <img id="image-{{ item['item_pk'] }}" src="{{ url_for('static', filename='dishes/' + item.item_image) }}" alt="{{ item.item_image }}">
+            </article>
+        {% endfor %}
+    </section>
+
+    <!-- mix-target - specifies the DOM element to target for updates. mix-swap - outerHTML means the entire target element will be replaced or removed based on the server response. -->
+
+
+        <!-- ---------------------------- UPDATE ITEM MODAL---------------------------- -->
+        <div id="myEditModal" class="modal">
+            <form id="updated_modal_content" enctype="multipart/form-data">
+                <header>
+                    <h4>Edit Product</h4>
+                    <span class="closeEditBtn">&times;</span>
+                </header>
+                <div class="modal_left">
+                    <input type="hidden" name="item_pk" id="modal_item_pk">
+        
+                    <div class="item_fields">
+                        <label for="modal_item_title">Product name</label>
+                        <input type="text" name="item_title" id="modal_item_title" value="">
+                    </div>
+                    <div class="item_fields">
+                        <label for="modal_item_description">Product description</label>
+                        <input type="text" name="item_description" id="modal_item_description" value="">
+                    </div>
+                    <div class="item_fields">
+                        <label for="modal_item_price">Price</label>
+                        <input type="text" name="item_price" id="modal_item_price" value="">
+                    </div>
+                </div>
+                <div class="modal_right">
+                    <div class="item_fields img_upload">
+                        <label for="fileUpload">
+                            <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-photo-plus"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M15 8h.01" /><path d="M12.5 21h-6.5a3 3 0 0 1 -3 -3v-12a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v6.5" /><path d="M3 16l5 -5c.928 -.893 2.072 -.893 3 0l4 4" /><path d="M14 14l1 -1c.67 -.644 1.45 -.824 2.182 -.54" /><path d="M16 19h6" /><path d="M19 16v6" /></svg>
+                        </label>
+                        <input type="file" id="fileUpload" name="item_files" mix-check="{{ x.file }}" required multiple/>
+                    </div>
+                </div>
+                <button id="uploadButton" mix-put="/update/items" mix-data="#updated_modal_content">
+                    Update
+                </button>
+            </form>
+        </div>
+    
+</main>
+
+{% include "_bottom.html" %}
+
+<script>
+    const items = {{ items | tojson | safe }};
+    console.log(items); // Should show the items in the console
+</script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,34 @@
+
+:root{
+    /* colors */
+    --backgroundColor: #FBFBFB;
+    --mainBlue: #009de0;
+    --subtleBlue: #ebf7fd;
+    --black: #202020;
+    --white: #fbfbfb;
+    --textDescription: #202125a3; 
+    --lightGrey: #ededee;
+
+    /* padding & margins */
+    --btnPadSmall: 0.7rem;
+    --mainPadding: 3.125rem;
+    --mediumPadding: 1.5rem;
+    --smallPadding:1rem;
+    --tinyPadding: 0.5rem;
+    --mainMargin: 3.125rem;
+    --mediumMargin: 1.5rem;
+    --smallMargin: 1rem;
+    --tinyMargin: 0.5rem;
+
+    /* font sizes */
+    --smallHeaderMobile: 1.25rem;
+    --bigHeaderMobile: 2rem;
+    --bigHeaderDesktop: 2.5rem;
+    --linkSize: 1.25rem;
+    --paraMobile: 1rem;
+    --fwMedium: 800;
+
+    --smallRadius: 0.5rem;
+    --cardRadius: 1rem;
+    --colorShadow: #0000003f;
+}

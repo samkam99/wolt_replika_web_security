@@ -1,0 +1,7 @@
+<button
+    class="block-button"
+    data-pk="{{ user['user_pk'] if user else item['item_pk'] }}"
+    data-action="block"
+    data-type="{{ 'user' if user else 'item' }}">
+    Block
+</button>

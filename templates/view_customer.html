@@ -1,0 +1,91 @@
+{% include "_top_logged_user.html" %}
+<!-- -------------------------CART MODAL------------------------- -->
+<section id="cart">
+    <form class="cart_item_dropdown">
+        <header>
+            <h4>Your order</h4>
+            <p class="cart_close">&times;</p>
+        </header>
+        <ul class="items">
+            {% for item in session.get('cart', []) %}
+            <li class="item">     
+                <img class="item_image" id="image-{{ item['item_pk'] }}" src="{{ url_for('static', filename='../dishes/item.item_image')['path'] }}" alt="{{ item.item_image }}">       
+                <div>
+                    <p class="item_title">{{ item['item_title'] }}</p>
+                    <p class="item_price">{{ item['item_price'] }} kr</p>
+                </div>
+                <p class="amount">{{ item['quantity'] }}</p>
+                <button class="remove_btn" id="remove_btn-{{ item['item_pk'] }}" data-item-id="{{ item['item_pk'] }}">
+                    &times;
+                </button>
+                
+            </li>
+            {% endfor %}
+        </ul>
+        
+        <button type="submit" mix-post="/order" mix-data=".cart_item_dropdown">
+            <p class="order_title">Order!</p>
+            <p id="order">0.00kr.</p>
+        </button>
+    </form>
+</section>
+
+
+<main>
+    <section id="welcome">
+        <header>
+            <h3>
+                <span>
+                    Welcome back 
+                </span> 
+                {{ user["user_name"] }}
+                {{ user["user_last_name"] }}
+            </h3>
+        </header>
+    </section>
+
+    <!-- Search Query Header -->
+    {% if query %}
+    <section id="search_results">
+        <header>
+            <h3>Search Results for "{{ query }}"</h3>
+        </header>
+    </section>
+    {% endif %}
+
+    <!-- Error Message -->
+    {% if error %}
+    <section id="error_message">
+        <p class="error">{{ error }}</p>
+    </section>
+    {% endif %}
+
+    <section id="restaurant_items">
+        {% if items %}
+            {% for item in items %}
+                <article class="items">
+                    <div class="card_info">
+                        <h4>{{ item["item_title"] }}</h4>
+                        <h5>{{ item["user_name"] }}</h5>
+                        <p class="item_description">{{ item["item_description"] }}</p>
+                        <div class="card_add">
+                            <p class="item_price">{{ item["item_price"] }} kr</p>
+                            <button class="add_btn" id="add_btn-{{ item['item_pk'] }}" data-item-id="{{ item['item_pk'] }}"><span>Add to cart</span></button>
+                        </div>
+                    </div>
+                    {% if 'dishes/' in item.item_image %}
+                        <img class="item_image" id="image-{{ item['item_pk'] }}" src="{{ url_for('static', filename=item.item_image) }}" alt="{{ item.item_image }}">
+                    {% else %}
+                        <img class="item_image" src="{{ url_for('static', filename='dishes/' + item.item_image) }}" alt="{{ item.item_image }}">
+                    {% endif %}
+                </article>
+            {% endfor %}
+        {% else %}
+            <p>No items match your search.</p>
+        {% endif %}
+    </section>
+</main>
+
+{% include "_bottom.html" %}
+</body>
+</html>

@@ -1,0 +1,47 @@
+
+{% include "_top.html" %}
+
+<main class="w-full h-100vh d-flex p-items-center">
+    
+    <section class="signup">
+        <div class="signup_img">
+            <img src="{{ url_for('static', filename='img/signup.png')}}" alt="">
+        </div>
+    
+        <form id="frm_user_signup" class="w-25% d-flex flex-col gap-4 mx-auto">
+            
+            <h1>Sign up!</h1>
+    
+            <div class="d-flex flex-col">
+                <input name="user_name" type="text" placeholder="name" mix-check="{{ x.USER_NAME_REGEX }}">
+            </div>
+    
+    
+            <div class="d-flex flex-col">
+                <input name="user_last_name" type="text" placeholder="last name" mix-check="{{ x.USER_LAST_NAME_REGEX }}">
+            </div>        
+    
+            <div class="d-flex flex-col">
+                <input name="user_email" type="text" placeholder="email" mix-check="{{ x.REGEX_EMAIL }}">
+            </div>
+    
+    
+            <div class="d-flex flex-col">
+                <label for="user_password" class="d-flex">
+                    <span class="ml-auto text-c-gray:+25">{{ x.USER_PASSWORD_MIN }} to {{ x.USER_PASSWORD_MAX }} chars</span>
+                </label>
+                <input name="user_password" type="text" placeholder="password" mix-check="{{ x.REGEX_USER_PASSWORD }}">
+            </div>        
+    
+            <button mix-post="/signup" mix-data="#frm_user_signup" class="btn">
+                Signup
+            </button>
+    
+            <a href="{{url_for('view_login')}}" class="text-a-center">Login</a>
+    
+        </form>
+    </section>
+
+</main>
+
+{% include "_bottom.html" %}

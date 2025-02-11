@@ -1,0 +1,42 @@
+
+{% include "_top.html" %}
+
+<main class="w-full h-100vh d-flex p-items-center">
+    <section class="login">
+        <div class="login_img">
+            <img src="{{ url_for('static', filename='img/scooter.png')}}" alt="">
+        </div>
+
+        <form id="frm_user_login" class="w-25% d-flex flex-col gap-4 mx-auto">
+
+            <h1>Welcome back!</h1>
+            
+            <div class="text-c-green text-200">
+                {{ message }}
+            </div>
+            
+            <div class="d-flex flex-col">
+                <input name="user_email" type="text" placeholder="email" mix-check="{{ x.REGEX_EMAIL }}">
+            </div>
+
+            <div class="d-flex flex-col">
+                <!-- <label for="user_password" class="d-flex">
+                    <span>password</span>
+                    <span class="ml-auto text-c-gray:+25">{{ x.USER_PASSWORD_MIN }} to {{ x.USER_PASSWORD_MAX }} chars</span>
+                </label> -->
+                <input name="user_password" type="text" placeholder="password" mix-check="{{ x.REGEX_USER_PASSWORD }}">
+            </div>
+
+            <a href="{{ url_for('forgot_password') }}" class="text-a-center">Forgot password</a> 
+
+            <button mix-post="/login" mix-data="#frm_user_login" class="btn">
+                Login
+            </button>
+
+            <a href="{{url_for('view_signup')}}" class="text-a-center">Signup</a>
+
+        </form>
+    </section>
+</main>
+
+{% include "_bottom.html" %}

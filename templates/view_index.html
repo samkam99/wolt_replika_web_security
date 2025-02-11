@@ -1,0 +1,48 @@
+{% include "_top.html" %}
+
+<main class="w-full d-flex pt-10">
+    <!-- <div id="map" class="w-full h-100vh"></div>
+    
+    <div id="items" class="w-full h-100vh">
+        <button class="px-20 py-4 rounded-sm"
+            mix-get="/items/page/1"
+        >
+            More
+        </button>
+    
+    </div> -->
+
+    <section id="restaurant_items">
+        {% if items %}
+            {% for item in items %}
+                <article class="items">
+                    <div class="card_info">
+                        <h4>{{ item["item_title"] }}</h4>
+                        <h5>{{ item["user_name"] }}</h5>
+                        <p class="item_description">{{ item["item_description"] }}</p>
+                        <div class="card_add">
+                            <p class="item_price">{{ item["item_price"] }} kr</p>
+                        </div>
+                    </div>
+                    {% if 'dishes/' in item.item_image %}
+                        <img class="item_image" id="image-{{ item['item_pk'] }}" src="{{ url_for('static', filename=item.item_image) }}" alt="{{ item.item_image }}">
+                    {% else %}
+                        <img class="item_image" src="{{ url_for('static', filename='dishes/' + item.item_image) }}" alt="{{ item.item_image }}">
+                    {% endif %}
+                </article>
+            {% endfor %}
+        {% else %}
+            <p>No items match your search.</p>
+        {% endif %}
+    </section>
+    
+
+</main>
+
+
+{% include "_bottom.html" %}
+
+
+</body>
+
+</html>

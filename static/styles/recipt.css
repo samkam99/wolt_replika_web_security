@@ -1,0 +1,43 @@
+@import '_variables.css';
+
+body{
+    main{
+        .recipt_container{
+            background-image: url("../img/recipt.avif");
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            height: 90vh;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: end;
+        }
+        .recipt_info{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: var(--white);
+            height: 50vh;
+            width: 90%;
+            border-radius: var(--cardRadius) var(--cardRadius) 0 0;
+            h1{
+                font-weight: var(--fwMedium);
+            }
+            a button{
+                margin-top: var(--mainMargin);
+                background-color: var(--mainBlue);
+                color: var(--white);
+            }
+        }
+    }
+    /* ********************** DESKTOP ********************** */
+    @media (min-width:1170px){
+        main{
+            .recipt_info{
+                width: 70%;
+            }
+        }
+    }
+}

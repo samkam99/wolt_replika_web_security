@@ -1,0 +1,61 @@
+@import '_variables.css';
+
+body{
+    main{  
+        display: flex;
+        justify-content: center;
+        .signup{
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 60vh;
+            background-color: var(--white);
+            box-shadow: 0 1px 2px 0 var(--colorShadow), 0 0 1px 0 var(--colorShadow) ;
+            border-radius: var(--smallRadius);
+            
+            width: 90%;
+            border-radius: var(--cardRadius);
+            .signup_img{
+                display: none;
+            }
+            #frm_user_signup{
+                width: 100%;
+                padding: var(--mainPadding);
+            }
+        }
+    }
+    /* ********************** TABLET ********************** */
+    @media (min-width:800px){
+        main{
+            .signup{
+                width: 70%;
+                #frm_user_signup{
+                    width: 100%;
+                }
+            }
+        }
+    }
+    /* ********************** DESKTOP ********************** */
+    @media (min-width:1080px){
+        main{
+            .signup{
+                height: 70vh;
+                overflow: hidden;
+                .signup_img{
+                    display: block;
+                    width: 50%;
+                    overflow: hidden;
+                    img{
+                        width: 100%;
+                        border-radius: var(--smallRadius);
+                    }
+                }
+                #frm_user_signup{
+                    width: 50%;
+                }
+            }
+        }
+    }
+}

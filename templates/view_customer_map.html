@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Map</title>
+
+    <!-- Link external CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/map.css') }}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+</head>
+
+<body>
+
+    {% include "_top_logged_user.html" %}
+
+    <!-- Go Back Button -->
+    <div class="back-button-container">
+        <a href="{{ url_for('view_customer') }}" class="back-button">Go Back</a>
+    </div>
+
+    <h1>Welcome to the restaurant map</h1>
+    <div class="container">
+        <div id="map"></div>
+        <div id="restaurant-list">
+            <h2>Restaurants</h2>
+            <ul id="restaurant-list-items"></ul>
+        </div>
+    </div>
+
+    <!-- Pass restaurants data to JavaScript -->
+    <script id="restaurant-data" type="application/json">
+        {{ restaurants | tojson | safe }}
+    </script>
+
+    <!-- Include external JavaScript -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="{{ url_for('static', filename='js/map.js') }}"></script>
+</body>
+
+</html>

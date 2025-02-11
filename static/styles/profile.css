@@ -1,0 +1,284 @@
+@import '_variables.css';
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: var(--white);
+    /* Set the background to white */
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: var(--mainPadding);
+}
+
+#profile_nav {
+    width: 100%;
+    padding: var(--mainPadding);
+    background: var(--white);
+    box-shadow: 0 1px 2px var(--colorShadow);
+    border-radius: var(--cardRadius);
+}
+
+#profile_nav h1 {
+    font-size: var(--bigHeaderDesktop);
+    margin-bottom: var(--mediumMargin);
+    text-align: center;
+}
+
+#profile_nav nav ul {
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    gap: var(--mediumMargin);
+}
+
+#profile_nav nav a {
+    text-decoration: none;
+    color: var(--black);
+    font-size: var(--linkSize);
+    transition: color 0.3s;
+}
+
+#profile_nav nav a:hover {
+    color: var(--mainBlue);
+}
+
+#profile_nav .highlight {
+    font-weight: bold;
+    color: var(--mainBlue);
+    text-decoration: underline;
+}
+
+/* Profile ID Section */
+.profile_id {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: var(--mediumMargin);
+    background: var(--white);
+    box-shadow: 0 2px 5px var(--colorShadow);
+    border-radius: var(--cardRadius);
+    padding: var(--mainPadding);
+    width: 60%;
+    margin-top: var(--mediumMargin);
+}
+
+.profile_id_left {
+    text-align: center;
+    flex: 1;
+}
+
+.profile_id_left img {
+    width: 8rem;
+    height: 8rem;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: var(--mediumMargin);
+}
+
+.edit_profile button {
+    padding: var(--tinyPadding) var(--mediumPadding);
+    margin: var(--tinyMargin);
+    border: none;
+    border-radius: var(--cardRadius);
+    cursor: pointer;
+}
+
+/* Delete button: Always red */
+.edit_profile .btn-delete {
+    background-color: rgb(189, 0, 0);
+    /* Red background */
+    color: var(--white);
+    /* White text */
+}
+
+/* Remove hover-specific styles */
+.edit_profile .btn-delete:hover {
+    background-color: rgb(217, 0, 0);
+    /* Same as default */
+}
+
+.edit_profile .btn-edit {
+    background-color: var(--mainBlue);
+    color: var(--white);
+}
+
+.edit_profile .btn-edit:hover {
+    background-color: #007bb5;
+}
+
+.profile_id_right {
+    flex: 2;
+}
+
+.profile_id_right .cate_bold {
+    font-weight: bold;
+    margin-bottom: var(--tinyMargin);
+}
+
+/* Form Section */
+#profile-edit-section {
+    display: none;
+    flex-direction: column;
+    gap: var(--mediumMargin);
+}
+
+form input {
+    width: 100%;
+    padding: var(--smallPadding);
+    border: 1px solid var(--lightGrey);
+    border-radius: var(--cardRadius);
+    font-size: var(--paraMobile);
+}
+
+form button {
+    padding: var(--tinyPadding) var(--mediumPadding);
+    border: none;
+    border-radius: var(--cardRadius);
+    cursor: pointer;
+    font-size: var(--paraMobile);
+}
+
+form .btn-save {
+    background-color: var(--mainBlue);
+    color: var(--white);
+}
+
+form .btn-cancel {
+    background-color: var(--lightGrey);
+    color: var(--black);
+}
+
+/* Modal Overlay */
+.modal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    /* Semi-transparent background */
+    z-index: 1000;
+}
+
+/* Modal Content */
+.modal-content {
+    background: #fff;
+    /* White background */
+    padding: 2rem;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    /* Shadow for depth */
+    width: 400px;
+    /* Fixed width */
+    max-width: 90%;
+    /* Ensure it fits on smaller screens */
+    animation: fadeIn 0.3s ease;
+    /* Smooth appearance */
+}
+
+/* Modal Header */
+.modal-content h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+/* Modal Text */
+.modal-content p {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+    color: #555;
+}
+
+/* Input Field */
+.modal-content input {
+    width: 100%;
+    padding: 0.75rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+/* Modal Actions */
+.modal-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+/* Confirm Button */
+.modal-actions .btn-confirm {
+    background-color: #c70000;
+    /* Red button for delete */
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+}
+
+.modal-actions .btn-confirm:hover {
+    background-color: #f40000;
+    /* Darker red on hover */
+}
+
+/* Cancel Button */
+.modal-actions .btn-cancel {
+    background-color: #ddd;
+    color: black;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+}
+
+.modal-actions .btn-cancel:hover {
+    background-color: #bbb;
+    /* Darker grey on hover */
+}
+
+/* Fade-in Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .profile_id {
+        flex-direction: column;
+        width: 100%;
+        padding: var(--mediumPadding);
+    }
+
+    #profile_nav nav ul {
+        flex-direction: column;
+        align-items: center;
+    }
+}

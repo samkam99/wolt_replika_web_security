@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='mixhtml.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/top.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/profile.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/customer.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/recipt.css') }}">
+    <script src="{{ url_for('static', filename='js/edit_profile.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/cart_modal.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/burger_menu.js') }}" defer></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/mojocss"></script>
+    <title>
+        {{ title or "Company" }}
+    </title>
+</head>
+
+<body class="w-full h-100vh text-c-gray:-16">
+<!-- 
+    <nav>
+        <div class="nav-left">
+            <a href="{{ url_for('view_customer') }}"><img src="{{ url_for('static', filename='img/Wolt-Logo.png') }}"
+                    alt=""></a>
+        </div>
+
+        <form method="GET" action="/search">
+            <input type="text" name="query" placeholder="Search" id="search" required>
+        </form>
+        
+        <div class="nav-right">
+            <a href="{{ url_for('view_customer_map') }}">
+                <svg class="map-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M1 6.5l7-2.5 6 2 9-3v13l-7 3-6-2-9 3z"></path>
+                    <path d="M8 4v13"></path>
+                    <path d="M16 6v13"></path>
+                </svg>
+                Map
+            </a>
+            <a href="{{ url_for('view_user_profile') }}">
+                <svg class="profile-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+                    <path d="M12 10m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
+                    <path d="M6.168 18.849a4 4 0 0 1 3.832 -2.849h4a4 4 0 0 1 3.834 2.855" />
+                </svg>
+                {{ user["user_name"] }}
+            </a>
+            <button class="open_cart">
+                <svg class="cart" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M6 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+                    <path d="M17 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+                    <path d="M17 17h-11v-14h-2" />
+                    <path d="M6 5l14 1l-1 7h-13" />
+                </svg>
+            </button>
+            <form method="POST" action="{{ url_for('logout') }}">
+                <button class="log-out">
+                    Logout
+                </button>
+            </form>
+        </div>
+    </nav> -->
+
+
+    <nav>
+        <div class="nav-left">
+            <a href="{{ url_for('view_customer')}}"><img src="{{ url_for('static', filename='img/Wolt-Logo.png')}}" alt=""></a>
+        </div>
+ 
+        <form method="GET" action="/search">
+            <input type="text" name="query" placeholder="Search" id="search" required>
+        </form>
+        
+            <div class="nav-right">
+                <a href="{{ url_for('view_customer_map') }}" class="map-icon-desktop">
+                    <svg class="map-icon map-icon-desktop" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M1 6.5l7-2.5 6 2 9-3v13l-7 3-6-2-9 3z"></path>
+                        <path d="M8 4v13"></path>
+                        <path d="M16 6v13"></path>
+                    </svg>
+                    Map
+                </a>
+                <button class="open_cart">
+                    <svg class="cart" xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-shopping-cart"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M6 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M17 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M17 17h-11v-14h-2" /><path d="M6 5l14 1l-1 7h-13" /></svg>
+                </button>
+                <div class="burger-menu" id="burger-menu">
+                    <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="currentColor"  class="icon icon-tabler icons-tabler-filled icon-tabler-user"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 2a5 5 0 1 1 -5 5l.005 -.217a5 5 0 0 1 4.995 -4.783z" /><path d="M14 14a5 5 0 0 1 5 5v1a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-1a5 5 0 0 1 5 -5h4z" /></svg>
+                </div>
+                <div class="nav-links" id="nav-links">
+                    <a href="{{ url_for('view_customer_map') }}" class="map-icon-mobile">
+                        <svg class="map-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 6.5l7-2.5 6 2 9-3v13l-7 3-6-2-9 3z"></path>
+                            <path d="M8 4v13"></path>
+                            <path d="M16 6v13"></path>
+                        </svg>
+                        Map
+                    </a>
+
+                    <p>Profile:</p>
+                    <a href="{{ url_for('view_user_profile') }}">
+                        <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="currentColor"  class="icon icon-tabler icons-tabler-filled icon-tabler-user"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 2a5 5 0 1 1 -5 5l.005 -.217a5 5 0 0 1 4.995 -4.783z" /><path d="M14 14a5 5 0 0 1 5 5v1a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-1a5 5 0 0 1 5 -5h4z" /></svg>
+                            {{ user["user_name"] }}
+                            {{ user["user_last_name"] }}
+                    </a>
+ 
+                    <form method="POST" action="{{url_for('logout')}}" class="logout">
+                        <button class="log-out">
+                            Logout
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div id="toast" class="d-flex flex-col j-content-center p-fixed w-full top-4 z-10"></div>

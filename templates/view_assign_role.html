@@ -1,0 +1,36 @@
+{% include "_top_logged.html" %}
+
+<main class="w-full h-80vh d-flex flex-col p-items-center">
+    <section class="d-flex flex-col gap-4 my-auto p-items-center">
+        <header>
+            <h1>Choose a role</h1>
+        </header>
+
+        <!-- Form for role selection -->
+        <p>Please select a role to proceed:</p>
+        <form id="partner">
+            <input type="hidden" name="role_pk" value="f47ac10b-58cc-4372-a567-0e02b2c3d479">
+            <button type="submit" mix-post="/assign-role" mix-data="#partner">
+                partner
+            </button>
+        </form>
+        <form id="customer">
+            <input type="hidden" name="role_pk" value="c56a4180-65aa-42ec-a945-5fd21dec0538">
+            <button type="submit" mix-post="/assign-role" mix-data="#customer">
+                customer
+            </button>
+        </form>
+        <form id="restaurant">
+            <input type="hidden" name="role_pk" value="9f8c8d22-5a67-4b6c-89d7-58f8b8cb4e15">
+            <button type="submit" mix-post="/assign-role" mix-data="#restaurant">
+                restaurant
+            </button>
+        </form>
+
+
+
+
+    </section>
+</main>
+
+{% include "_bottom.html" %}

@@ -1,0 +1,14 @@
+{% include "_top_logged_rest.html" %}
+
+<main class="w-full h-100vh d-flex p-items-center">
+    <section class="w-25% d-flex flex-col gap-4 mx-auto">
+        {{ user["user_name"] }}
+        {{ user["user_last_name"] }}
+        {{ user["user_email"] }}
+    </section>
+</main>
+
+{% include "_bottom.html" %}
+
+</body>
+</html>

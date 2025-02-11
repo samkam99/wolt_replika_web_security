@@ -1,0 +1,8 @@
+<button
+    class="unblock-button"
+    data-pk="{{ user['user_pk'] if user else item['item_pk'] }}"
+    data-action="unblock"
+    data-type="{{ 'user' if user else 'item' }}">
+    Unblock
+</button>
+
