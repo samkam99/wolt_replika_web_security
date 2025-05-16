@@ -871,13 +871,26 @@ def update_profile():
         user_name = request.form.get("user_name")
         user_last_name = request.form.get("user_last_name")
         user_email = request.form.get("user_email")
+        current_password = request.form.get("current_password", "") # New <----
 
         # Validate fields
-        if not user_name or not user_last_name or not user_email:
+        if not user_name or not user_last_name or not user_email or not current_password:
             return make_response({"error": "All fields are required."}, 400)
 
         # Connect to the database
         db_conn, cursor = x.db()
+
+        # Verify current password against stored hash
+        cursor.execute(
+            "SELECT user_password FROM users WHERE user_pk = %s",
+            (user_id,)
+        )
+        row = cursor.fetchone()
+        if not row or not check_password_hash(row["user_password"], current_password):
+            # close and bail out
+            cursor.close()
+            db_conn.close()
+            return make_response({"error": "Current password is incorrect."}, 403)
 
         # Update user information in the database
         query = """
