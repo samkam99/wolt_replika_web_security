@@ -6,6 +6,8 @@ import os
 import uuid
 import time
 
+from werkzeug.utils import secure_filename # New <----
+
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -156,32 +158,43 @@ def validate_item_price():
 ##############################
 # UPLOAD_ITEM_FOLDER = './static/images'
 UPLOAD_ITEM_FOLDER = './static/dishes'
-ALLOWED_ITEM_FILE_EXTENSIONS = {"png", "jpg", "jpeg", "gif", "webp", "avif"}
+
+# 1) Whitelist extensions
+ALLOWED_ITEM_FILE_EXTENSIONS = {"png", "jpg", "jpeg"}
+# 2) Whitelist MIME types
+ALLOWED_MIME_TYPES = {"image/jpeg", "image/png"}
 
 def validate_item_images():
+    # Ensure the form included the file input
     if 'item_files' not in request.files:
-        raise_custom_exception("item_files missing", 400)
-
+        raise_custom_exception("No file part in the request", 400)
     files = request.files.getlist('item_files')
     if not files:
-        raise_custom_exception("No files Uploaded", 400)
+        raise_custom_exception("No files uploaded", 400)
 
-    validated_files =[]
+    validated_files = []
 
     for file in files:
+        # Check we actually got a filename
         if file.filename == "":
-            raise_custom_exception("one of the item_files has an invalid name", 400)
+            raise_custom_exception("One of the uploaded files has no filename", 400)
 
-        file_extension = os.path.splitext(file.filename)[1][1:].lower() #get file extension
-        if file_extension not in ALLOWED_ITEM_FILE_EXTENSIONS:
-            raise_custom_exception(f"item_file '{file.filename} has an invalid extension", 400)
+        # 1) Extension check
+        ext = os.path.splitext(file.filename)[1][1:].lower()
+        if ext not in ALLOWED_ITEM_FILE_EXTENSIONS:
+            raise_custom_exception(f"Invalid file extension: {file.filename}", 400)
 
-        #generate a unique filename
-        filename = 'dish_' + str(uuid.uuid4()) + '.' + file_extension
+        # 2) MIME-type check
+        if file.mimetype not in ALLOWED_MIME_TYPES:
+            raise_custom_exception(f"Invalid MIME type: {file.mimetype}", 400)
 
-        #add to the validated list
-        validated_files.append((file, filename))
-    
+        # 3) Build a safe, unique filename
+        unique_name = f"dish_{uuid.uuid4()}.{ext}"
+        safe_name   = secure_filename(unique_name)
+
+        # 4) Everything passed—keep for later saving
+        validated_files.append((file, safe_name))
+
     return validated_files
 
 
