@@ -79,7 +79,8 @@ def allow_origin(origin="*"):
 ##############################
 USER_NAME_MIN = 2
 USER_NAME_MAX = 20
-USER_NAME_REGEX = f"^.{{{USER_NAME_MIN},{USER_NAME_MAX}}}$"
+USER_NAME_REGEX = f"^[A-Za-zÆØÅæøå\\- ]{{{USER_NAME_MIN},{USER_NAME_MAX}}}$"
+
 def validate_user_name():
     error = f"name {USER_NAME_MIN} to {USER_NAME_MAX} characters"
     user_name = request.form.get("user_name", "").strip()
@@ -89,7 +90,7 @@ def validate_user_name():
 ##############################
 USER_LAST_NAME_MIN = 2
 USER_LAST_NAME_MAX = 20
-USER_LAST_NAME_REGEX = f"^.{{{USER_LAST_NAME_MIN},{USER_LAST_NAME_MAX}}}$"
+USER_LAST_NAME_REGEX = f"^[A-Za-zÆØÅæøå\\- ]{{{USER_LAST_NAME_MIN},{USER_LAST_NAME_MAX}}}$"
 def validate_user_last_name():
     error = f"last name {USER_LAST_NAME_MIN} to {USER_LAST_NAME_MAX} characters"
     user_last_name = request.form.get("user_last_name", "").strip() # None

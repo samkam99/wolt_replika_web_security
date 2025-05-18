@@ -7,8 +7,8 @@ import uuid
 import time
 import redis
 import os
-
-
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 from icecream import ic
 ic.configureOutput(prefix=f'***** | ', includeContext=True)
 
@@ -16,8 +16,48 @@ app = Flask(__name__)
 app.config['SESSION_TYPE'] = 'filesystem'  # or 'redis', etc.
 Session(app)
 
-
 app.secret_key = "your_secret_key"
+
+limiter = Limiter(
+    key_func=get_remote_address,
+    storage_uri="redis://redis:6379"
+)
+limiter.init_app(app)
+
+@app.after_request
+def add_security_headers(response):
+    # log which route got the headers (for dev)
+    print("Security headers injected for:", request.path)
+
+    # control where content can load from
+    response.headers['Content-Security-Policy'] = (
+    "default-src 'self'; "
+    "script-src 'self' https://unpkg.com 'unsafe-inline'; "
+    "style-src 'self' https://unpkg.com 'unsafe-inline'; "
+    "object-src 'none'; "
+    "frame-ancestors 'none';"
+)
+
+    # force HTTPS in the browser
+    response.headers['Strict-Transport-Security'] = 'max-age=63072000; includeSubDomains; preload'
+
+    # stop browser from guessing file types
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+
+    # prevent this site from being in a frame
+    response.headers['X-Frame-Options'] = 'DENY'
+
+    # hide referrer info on link clicks
+    response.headers['Referrer-Policy'] = 'no-referrer'
+
+    # block geolocation and mic by default
+    response.headers['Permissions-Policy'] = 'geolocation=(), microphone=()'
+
+    return response
+
+
+
+
 
 ##############################
 ##############################
@@ -624,7 +664,10 @@ def signup():
 
 ##############################
 @app.post("/login")
+@limiter.limit("5 per minute")
+
 def login():
+    print("LOGIN ROUTE HIT")  # Add this line
     try:
         # Get the user's email and password from the form
         user_email = x.validate_user_email()
@@ -1667,6 +1710,12 @@ def verify_user(verification_key):
     finally:
         if "cursor" in locals(): cursor.close()
         if "db" in locals(): db.close()  
+
+############## FLASK LIMITER ############
+@app.errorhandler(429)
+def handle_ratelimit_exceeded(e):
+    toast = render_template("___toast.html", message="Too many login attempts. Please wait and try again.")
+    return f"""<template mix-target="#toast">{toast}</template>""", 429
 
 ############## RESET KEY ############
 @app.get("/reset-password/<reset_key>")
