@@ -19,6 +19,9 @@
 
     <div id="myModal" class="modal">
         <form id="modal_content" enctype="multipart/form-data">
+            
+            <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+
             <header>
                 <h4>Add Product</h4>
                 <span class="close">&times;</span>
