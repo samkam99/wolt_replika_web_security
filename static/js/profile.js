@@ -71,16 +71,20 @@ document.querySelector("#profile-edit-form").addEventListener("submit", async fu
     }
 
     try {
+        const csrfToken = document.querySelector('input[name="csrf_token"]').value;
+
         const response = await fetch("/update-profile", {
             method: "POST",
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
             body: new URLSearchParams({
+                csrf_token: csrfToken,  // ✅ Include this!
                 user_name: userName,
                 user_last_name: userLastName,
                 user_email: userEmail,
-                current_password: currentPassword // New <----
+                current_password: currentPassword
             }),
         });
+
 
         if (response.ok) {
             alert("Profile updated successfully!");

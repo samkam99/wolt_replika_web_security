@@ -81,6 +81,8 @@ def allow_origin(origin="*"):
 ##############################
 def check_csrf_token():
     token = request.form.get("csrf_token")
+    print("Form token:", token)
+    print("Session token:", session.get("csrf_token"))
     if not token or token != session.get("csrf_token"):
         raise_custom_exception("CSRF token invalid", 403)
         
@@ -115,6 +117,8 @@ def validate_user_email():
 
 ##############################
 
+USER_PASSWORD_MIN = 8
+USER_PASSWORD_MAX = 50
 REGEX_USER_PASSWORD = r"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@#$%^&+=!]{8,50}$"
 
 def validate_user_password():
