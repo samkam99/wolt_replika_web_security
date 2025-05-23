@@ -113,12 +113,12 @@
                             {{ user["user_name"] }}
                             {{ user["user_last_name"] }}
                     </a>
- 
-                    <form method="POST" action="{{url_for('logout')}}" class="logout">
-                        <button class="log-out">
-                            Logout
-                        </button>
+
+                    <form method="POST" action="{{ url_for('logout') }}" class="logout">
+                        <input type="hidden" name="csrf_token" value="{{ session['csrf_token'] }}">
+                        <button class="log-out">Logout</button>
                     </form>
+
                 </div>
             </div>
         </div>

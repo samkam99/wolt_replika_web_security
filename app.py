@@ -189,24 +189,6 @@ def view_login():
     # Render login view if no valid user or roles
     return render_template("view_login.html", x=x, title="Login", message=request.args.get("message", ""))
 
-# @app.get("/login")
-# @x.no_cache
-# def view_login():  
-#     # ic("#"*20, "VIEW_LOGIN")
-#     ic(session)
-#     # print(session, flush=True)  
-#     if session.get("user"):
-#         if len(session.get("user").get("roles")) > 1:
-#             return redirect(url_for("view_choose_role")) 
-#         if "admin" in session.get("user").get("roles"):
-#             return redirect(url_for("view_admin"))
-#         if "customer" in session.get("user").get("roles"):
-#             return redirect(url_for("view_customer")) 
-#         if "partner" in session.get("user").get("roles"):
-#             return redirect(url_for("view_partner"))         
-#     return render_template("view_login.html", x=x, title="Login", message=request.args.get("message", ""))
-
-
 ##############################
 @app.get("/customer")
 @x.no_cache
@@ -321,59 +303,6 @@ def view_restaurant():
         ic(f"Error occurred in /restaurant: {ex}")
         error = "System under maintenance. Please try again. View"
         return {"error": error}
-
-# @app.get("/restaurant")
-# @x.no_cache
-# def view_restaurant():
-#     try:
-#         # Ensure the user is logged in
-#         if not session.get("user", ""): 
-#             return redirect(url_for("view_login"))
-        
-#         user = session.get("user")
-
-#         # Check if the user has multiple roles
-#         if len(user.get("roles", "")) > 1:
-#             return redirect(url_for("view_choose_role"))
-        
-#         # Database connection
-#         db, cursor = x.db()
-        
-#         cursor.execute("""
-#             SELECT 
-#                 item_pk, item_user_fk, item_title, item_description, item_price, item_image
-#             FROM 
-#                 items
-#             WHERE 
-#                 item_user_fk = %s
-#             """, (user["user_pk"],))  # Match user_pk in session
-
-#         # Fetch all filtered items
-#         items = cursor.fetchall()
-
-#         ic("Fetched items from DB:", items)
-
-#         db.commit()
-
-#         # Debug: Print the retrieved items
-#         # print("Retrieved items:", items)
-
-#         return render_template("view_restaurant.html", x=x, user=user, items=items, title="Restaurant")
-
-#     except Exception as ex:
-#         db.rollback()  # Rollback the transaction in case of error
-#         # Log error for debugging
-#         ic(f"Error occurred in /restaurant: {ex}")
-#         error = "System under maintenance. Please try again. View"
-#         return {"error": error}, 500
-
-#     finally:
-#         # Ensure database connection is properly closed
-#         if cursor:
-#             cursor.close()
-#         if db:
-#             db.close()
-
 
 ##############################
 @app.get("/admin")
@@ -773,13 +702,15 @@ def login():
 ##############################
 @app.post("/assign-role")
 def assign_role():
+    db = cursor = None  # Initialize to avoid UnboundLocalError
     try:
         x.check_csrf_token()
+
         # Ensure user is logged in
         user = session.get("user")
         if not user:
             return redirect(url_for('view_login'))  # Redirect if the user is not logged in
-        
+
         user_pk = user.get("user_pk")
         if not user_pk:
             return "User primary key is missing in session", 400
@@ -799,7 +730,6 @@ def assign_role():
         existing_role = cursor.fetchone()
 
         if existing_role:
-            # If the role already exists, inform the user
             return f"User already has the {role_pk} role.", 400
 
         # Insert the role into the users_roles table
@@ -809,24 +739,15 @@ def assign_role():
         """, (user_pk, role_pk))
 
         db.commit()
-
-        # Redirect user to the appropriate role page
-        if role_pk == "c56a4180-65aa-42ec-a945-5fd21dec0538":
-            return f"""<template mix-redirect="/customer"></template>"""  # Redirect to customer view
-        elif role_pk == "f47ac10b-58cc-4372-a567-0e02b2c3d479":
-            return f"""<template mix-redirect="/partner"></template>"""  # Redirect to partner view
-        elif role_pk == "9f8c8d22-5a67-4b6c-89d7-58f8b8cb4e15":
-            return f"""<template mix-redirect="/restaurant"></template>"""  # Redirect to restaurant view
-        else:
-            return redirect(url_for('view_assign_role'))  # Default redirect if role is not recognized
-        # Redirect user to the appropriate role page
-        #return f"""<template mix-redirect="view_choose_role.html"></template>"""  # Use a clear URL pattern for role-specific pages
+        return "Role assigned successfully", 200
 
 
     except (x.CustomException, x.mysql.connector.Error) as ex:
         # Handle MySQL errors and CustomExceptions uniformly
         ic(ex)
-        db.rollback()  # Rollback the transaction in case of error
+        
+        if db:
+            db.rollback()  # Rollback only if db is initialized  # Rollback the transaction in case of error
         
         if isinstance(ex, x.CustomException): 
             toast = render_template("___toast.html", message=ex.message)
@@ -841,10 +762,16 @@ def assign_role():
         return "<template>System under maintenance</template>", 500  
 
     finally:
-        # Close database resources directly without checking if they exist
-        cursor.close()
-        db.close()
-
+        if cursor:
+            try:
+                cursor.close()
+            except Exception:
+                pass
+        if db:
+            try:
+                db.close()
+            except Exception:
+                pass
 
 ##############################
 @app.post("/items")
@@ -1587,70 +1514,6 @@ def user_delete(user_pk):
 
 
 ##############################
-# @app.delete("/items/delete/<item_pk>")
-# def item_delete(item_pk):
-#     try:
-#         # Ensure user is logged in
-#         user = session.get("user")
-#         if not user: 
-#             return redirect(url_for("view_login"))
-#         # if not session.get("user", ""): 
-#         #     return redirect(url_for("view_login"))
-        
-#         # Check if user has appropriate permissions (e.g., restaurant role)
-#         if "restaurant" not in user.get("roles") and "admin" not in user.get("roles"):
-#             return redirect(url_for("view_login"))
-#         # if not "restaurant" in session.get("user").get("roles"):
-#         #     return redirect(url_for("view_login"))
-
-#         # Validate the item primary key
-#         item_pk = x.validate_uuid4(item_pk)
-#         item_deleted_at = int(time.time())
-#         ic(f"item_deleted_at set to: {item_deleted_at}")
-
-#         db, cursor = x.db()
-#         cursor.execute("""
-#             UPDATE items 
-#             SET item_deleted_at = %s 
-#             WHERE item_pk = %s
-#         """, (item_deleted_at, item_pk))
-
-#         if cursor.rowcount != 1:
-#             x.raise_custom_exception("Cannot delete item", 400)
-#         ic(f"Rows affected: {cursor.rowcount}")  # Log how many rows were updated
-
-#         # Commit the transaction
-#         db.commit()
-
-#         # Log successful delete
-#         ic("Item successfully deleted from database")
-
-#         # Return a template with a success message
-#         toast = render_template("___toast.html", message="Item deleted")
-#         return f"""<template mix-target="#toast" mix-bottom>{toast}</template>"""
-
-#     except Exception as ex:
-#         # Log the exception for debugging
-#         ic(f"Error occurred: {ex}")
-
-#         # Rollback transaction if something goes wrong
-#         if "db" in locals(): db.rollback()
-#         # Handle custom application exceptions
-#         if isinstance(ex, x.CustomException): 
-#             return f"""<template mix-target="#toast" mix-bottom>{ex.message}</template>""", ex.code        
-
-#         # Handle MySQL-specific errors
-#         if isinstance(ex, x.mysql.connector.Error):
-#             ic(f"MySQL Error: {ex}")
-#             return "<template>Database error</template>", 500
-
-#         # Generic error response
-#         return "<template>System under maintenance</template>", 500  
-
-#     finally:
-#         # Ensure database resources are released
-#         if "cursor" in locals(): cursor.close()
-#         if "db" in locals(): db.close()
 @app.delete("/items/delete/<item_pk>")
 def item_delete(item_pk):
     try:
