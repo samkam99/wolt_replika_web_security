@@ -31,12 +31,21 @@ def add_security_headers(response):
 
     # control where content can load from
     response.headers['Content-Security-Policy'] = (
-    "default-src 'self'; "
-    "script-src 'self' https://unpkg.com 'unsafe-inline'; "
-    "style-src 'self' https://unpkg.com 'unsafe-inline'; "
-    "object-src 'none'; "
-    "frame-ancestors 'none';"
-)
+        "default-src 'self'; "
+        # Allow scripts from your own app and unpkg.com, including inline scripts
+        "script-src 'self' https://unpkg.com 'unsafe-inline'; "
+        # Allow styles from your app, unpkg.com, and Google Fonts, including inline styles
+        "style-src 'self' https://unpkg.com https://fonts.googleapis.com 'unsafe-inline'; "
+        # Allow images from your app, base64 data URIs, unpkg icons, and OpenStreetMap tiles
+        "img-src 'self' data: https://unpkg.com https://*.tile.openstreetmap.org; "
+        # Allow fonts from your app and Google Fonts
+        "font-src 'self' https://fonts.gstatic.com; "
+        # Block all plugins like <object> or Flash
+        "object-src 'none'; "
+        # Prevent clickjacking by disallowing this app in frames
+        "frame-ancestors 'none';"
+    )
+
 
     # force HTTPS in the browser
     response.headers['Strict-Transport-Security'] = 'max-age=63072000; includeSubDomains; preload'
@@ -757,7 +766,7 @@ def assign_role():
             return "User primary key is missing in session", 400
 
         # Get role_pk from the form data
-        role_pk = request.form.get("role_pk")
+        role_pk = x.validate_uuid4(request.form.get("role_pk"))
         if not role_pk:
             return "Role primary key is missing", 400
 
@@ -911,9 +920,10 @@ def update_profile():
             return redirect(url_for("view_login"))  # Redirect if the user is not logged in
 
         user_id = user.get("user_pk")  # Assuming user_pk is the unique user ID in the session
-        user_name = request.form.get("user_name")
-        user_last_name = request.form.get("user_last_name")
-        user_email = request.form.get("user_email")
+        user_name = x.validate_user_name()
+        user_last_name = x.validate_user_last_name()
+        user_email = x.validate_user_email()
+
 
         # Validate fields
         if not user_name or not user_last_name or not user_email:
@@ -1099,7 +1109,9 @@ def handle_password_reset(reset_key):
     print(request.form)
     try:
         # CHANGES START: Get both new password fields from the form
-        new_password = request.form.get("new_password")
+        # new_password = request.form.get("new_password")
+        # confirm_password = request.form.get("confirm_password")
+        new_password = x.validate_reset_password()
         confirm_password = request.form.get("confirm_password")
         print(f"New password: {new_password}, Confirm password: {confirm_password}")  # Debug log
 
@@ -1149,9 +1161,12 @@ def handle_password_reset(reset_key):
         return f"""<template mix-redirect="/login">{toast}</template>""", 200
 
     except Exception as ex:
-        print(f"Error during POST /reset-password: {ex}")  # Debug log
-        if "db" in locals(): db.rollback()
-        return """<template mix-target="#toast">System under maintenance</template>""", 500
+        # print(f"Error during POST /reset-password: {ex}")  # Debug log
+        # if "db" in locals(): db.rollback()
+        # return """<template mix-target="#toast">System under maintenance</template>""", 500
+        ic("❌ Password reset failed:")
+        ic(ex)
+        raise  # midlertidigt – så Flask viser stacktrace i terminalen
 
     finally:
         if "cursor" in locals(): cursor.close()
@@ -1211,7 +1226,8 @@ def update_items():
             x.raise_custom_exception("Please login", 401)
 
         # Get item details
-        item_pk = request.form.get("item_pk")
+        # item_pk = request.form.get("item_pk")
+        item_pk = x.validate_uuid4(request.form.get("item_pk"))
         ic(item_pk)  # Debugging the value of item_pk
         item_title = x.validate_item_title()
         ic(item_title)  # Debugging the value of item_title

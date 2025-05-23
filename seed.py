@@ -130,7 +130,7 @@ try:
         "user_name" : "Wolt",
         "user_last_name" : "Admin",
         "user_email" : "admin@wolt.com",
-        "user_password" : generate_password_hash("password"),
+        "user_password" : generate_password_hash("Password123"),
         "user_avatar" : "profile_10.jpg",
         "user_created_at" : int(time.time()),
         "user_deleted_at" : 0,
@@ -157,7 +157,7 @@ try:
         "user_name" : "John",
         "user_last_name" : "Customer",
         "user_email" : "customer@wolt.com",
-        "user_password" : generate_password_hash("password"),
+        "user_password" : generate_password_hash("Password123"),
         "user_avatar" : "profile_11.jpg",
         "user_created_at" : int(time.time()),
         "user_deleted_at" : 0,
@@ -185,7 +185,7 @@ try:
         "user_name" : "Mariah",
         "user_last_name" : "Partner",
         "user_email" : "partner@wolt.com",
-        "user_password" : generate_password_hash("password"),
+        "user_password" : generate_password_hash("Password123"),
         "user_avatar" : "profile_12.jpg",
         "user_created_at" : int(time.time()),
         "user_deleted_at" : None,
@@ -212,7 +212,7 @@ try:
         "user_name" : "O' snacks",
         "user_last_name" : "Restaurant",
         "user_email" : "restaurant@wolt.com",
-        "user_password" : generate_password_hash("password"),
+        "user_password" : generate_password_hash("Password123"),
         "user_avatar" : "profile_13.jpg",
         "user_created_at" : int(time.time()),
         "user_deleted_at" : None,
@@ -236,7 +236,7 @@ try:
     # Create 50 customer
 
     domains = ["example.com", "testsite.org", "mydomain.net", "website.co", "fakemail.io", "gmail.com", "hotmail.com"]
-    user_password = hashed_password = generate_password_hash("password")
+    user_password = hashed_password = generate_password_hash("Password123")
     for _ in range(10):
         user_pk = str(uuid.uuid4())
         user_verified_at = random.choice([0,int(time.time())])
@@ -267,7 +267,7 @@ try:
     ############################## 
     # Create 50 partners
 
-    user_password = hashed_password = generate_password_hash("password")
+    user_password = hashed_password = generate_password_hash("Password123")
     for _ in range(10):
         user_pk = str(uuid.uuid4())
         user_verified_at = random.choice([0,int(time.time())])
@@ -340,7 +340,7 @@ try:
     "Five Guys"
     ]
 
-    user_password = hashed_password = generate_password_hash("password")
+    user_password = hashed_password = generate_password_hash("Password123")
     for _ in range(10):
         user_pk = str(uuid.uuid4())
         user_verified_at = random.choice([0,int(time.time())])
