@@ -87,7 +87,8 @@ def check_csrf_token():
 ##############################
 USER_NAME_MIN = 2
 USER_NAME_MAX = 20
-USER_NAME_REGEX = f"^.{{{USER_NAME_MIN},{USER_NAME_MAX}}}$"
+USER_NAME_REGEX = f"^[A-Za-zÆØÅæøå\\- ]{{{USER_NAME_MIN},{USER_NAME_MAX}}}$"
+
 def validate_user_name():
     error = f"name {USER_NAME_MIN} to {USER_NAME_MAX} characters"
     user_name = request.form.get("user_name", "").strip()
@@ -97,7 +98,7 @@ def validate_user_name():
 ##############################
 USER_LAST_NAME_MIN = 2
 USER_LAST_NAME_MAX = 20
-USER_LAST_NAME_REGEX = f"^.{{{USER_LAST_NAME_MIN},{USER_LAST_NAME_MAX}}}$"
+USER_LAST_NAME_REGEX = f"^[A-Za-zÆØÅæøå\\- ]{{{USER_LAST_NAME_MIN},{USER_LAST_NAME_MAX}}}$"
 def validate_user_last_name():
     error = f"last name {USER_LAST_NAME_MIN} to {USER_LAST_NAME_MAX} characters"
     user_last_name = request.form.get("user_last_name", "").strip() # None
@@ -113,14 +114,29 @@ def validate_user_email():
     return user_email
 
 ##############################
-USER_PASSWORD_MIN = 8
-USER_PASSWORD_MAX = 50
-REGEX_USER_PASSWORD = f"^.{{{USER_PASSWORD_MIN},{USER_PASSWORD_MAX}}}$"
+
+REGEX_USER_PASSWORD = r"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@#$%^&+=!]{8,50}$"
+
 def validate_user_password():
-    error = f"password {USER_PASSWORD_MIN} to {USER_PASSWORD_MAX} characters"
+    error = "Password must be 8–50 characters, with at least 1 letter and 1 number"
     user_password = request.form.get("user_password", "").strip()
-    if not re.match(REGEX_USER_PASSWORD, user_password): raise_custom_exception(error, 400)
+    if not re.match(REGEX_USER_PASSWORD, user_password):
+        raise_custom_exception(error, 400)
     return user_password
+
+def validate_reset_password():
+    """Used in password reset: also compare fields"""
+    new_password = request.form.get("new_password", "").strip()
+    confirm_password = request.form.get("confirm_password", "").strip()
+
+    if not new_password or not confirm_password:
+        raise_custom_exception("Both password fields are required", 400)
+    if new_password != confirm_password:
+        raise_custom_exception("Passwords do not match", 400)
+    if not re.match(REGEX_USER_PASSWORD, new_password):
+        raise_custom_exception("Password must be 8–50 characters, with at least 1 letter and 1 number", 400)
+
+    return new_password
 
 ##############################
 REGEX_UUID4 = "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
@@ -225,13 +241,17 @@ def send_verify_email(to_email, user_verification_key):
         # Enable (turn on) 2 step verification/factor in the google account manager
         # Visit: https://myaccount.google.com/apppasswords
 
+        print("Attempting to send email to:", to_email)
+        print("Verification key:", user_verification_key)
+
 
         # Email and password of the sender's Gmail account
-        sender_email = "wolteksamen@gmail.com"
-        password = "hkgr nsno teuw ujiq"  # If 2FA is on, use an App Password instead
+        sender_email = "wolteksamen2025@gmail.com"
+        password = "fipw nbjq oviv cujw"  # If 2FA is on, use an App Password instead
 
         # Receiver email address
-        receiver_email = "wolteksamen@gmail.com"
+        receiver_email = to_email
+        # "wolteksamen@gmail.com"
         
         # Create the email message
         message = MIMEMultipart()
@@ -252,8 +272,15 @@ def send_verify_email(to_email, user_verification_key):
 
         return "email sent"
     
+    # except Exception as ex:
+        # raise_custom_exception("cannot send email", 500)
+        # print(" Email sending failed:", ex)
     except Exception as ex:
+        ic(" Email sending failed:")
+        ic(ex)
         raise_custom_exception("cannot send email", 500)
+
+
     finally:
         pass
 
@@ -262,11 +289,11 @@ def send_verify_email(to_email, user_verification_key):
 def send_recipt_email(cart):
     try:
         # Sender's email and password (use environment variables for sensitive info)
-        sender_email = "wolteksamen@gmail.com"
-        password = "hkgr nsno teuw ujiq"  # Use an App Password if 2FA is enabled
+        sender_email = "wolteksamen2025@gmail.com"
+        password = "fipw nbjq oviv cujw"  # Use an App Password if 2FA is enabled
 
         # Receiver email address (this will still be your email for testing)
-        receiver_email = "wolteksamen@gmail.com"
+        receiver_email = "wolteksamen2025@gmail.com"
 
         # Create the email message
         message = MIMEMultipart()
@@ -311,7 +338,7 @@ def send_action_email(to_email, action, entity):
     """
     try:
         sender_email = "wolteksamen@gmail.com" # Erstat med jeres egen email 
-        password = "hkgr nsno teuw ujiq"  # Erstat med jeres egen  
+        password = "fipw nbjq oviv cujw"  # Erstat med jeres egen  
 
         subject = f"{entity.capitalize()} {action.capitalize()}"
         body = f"The {entity} has been {action} successfully by the admin."
@@ -343,11 +370,11 @@ def send_reset_email(to_email, reset_key):
 
 
         # Email and password of the sender's Gmail account
-        sender_email = "wolteksamen@gmail.com"  # Erstat med jeres egen email 
-        password = "hkgr nsno teuw ujiq"  # If 2FA is on, use an App Password instead # Erstat med jeres egen kode 
+        sender_email = "wolteksamen2025@gmail.com"  # Erstat med jeres egen email 
+        password = "fipw nbjq oviv cujw"  # If 2FA is on, use an App Password instead # Erstat med jeres egen kode 
 
         # Receiver email address
-        receiver_email = "wolteksamen@gmail.com"
+        receiver_email = "wolteksamen2025@gmail.com"
         
         # Create the email message
         message = MIMEMultipart()
@@ -380,11 +407,11 @@ def send_reset_email(to_email, reset_key):
 def send_account_deletion_email(to_email, deleted_at):
 
     try:
-        sender_email = "wolteksamen@gmail.com"
-        password = "hkgr nsno teuw ujiq"  # Replace with your Gmail App Password
+        sender_email = "wolteksamen2025@gmail.com"
+        password = "fipw nbjq oviv cujw"  # Replace with your Gmail App Password
 
         # Receiver email address
-        receiver_email = "wolteksamen@gmail.com"
+        receiver_email = "wolteksamen2025@gmail.com"
 
         # Create the email message
         message = MIMEMultipart()
