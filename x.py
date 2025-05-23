@@ -1,4 +1,4 @@
-from flask import request, make_response
+from flask import request, make_response, session
 from functools import wraps
 import mysql.connector
 import re
@@ -40,7 +40,7 @@ def raise_custom_exception(error, status_code):
 def db():
     db = mysql.connector.connect(
         host="mysql",      # Replace with your MySQL server's address or docker service name "mysql"
-        user="root",  # Replace with your MySQL username
+        user="app_admin",  # Replace with your MySQL username
         password="password",  # Replace with your MySQL password
         database="company"   # Replace with your MySQL database name
     )
@@ -78,6 +78,12 @@ def allow_origin(origin="*"):
     return decorator
 
 
+##############################
+def check_csrf_token():
+    token = request.form.get("csrf_token")
+    if not token or token != session.get("csrf_token"):
+        raise_custom_exception("CSRF token invalid", 403)
+        
 ##############################
 USER_NAME_MIN = 2
 USER_NAME_MAX = 20
