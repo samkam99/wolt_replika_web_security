@@ -40,7 +40,7 @@ def raise_custom_exception(error, status_code):
 def db():
     db = mysql.connector.connect(
         host="mysql",      # Replace with your MySQL server's address or docker service name "mysql"
-        user="app_admin",  # Replace with your MySQL username
+        user="root",  # Replace with your MySQL username
         password="password",  # Replace with your MySQL password
         database="company"   # Replace with your MySQL database name
     )
