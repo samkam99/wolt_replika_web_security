@@ -63,6 +63,7 @@ document.querySelector("#profile-edit-form").addEventListener("submit", async fu
     const userName = document.getElementById("user_name").value;
     const userLastName = document.getElementById("user_last_name").value;
     const userEmail = document.getElementById("user_email").value;
+    const currentPassword = document.getElementById("current_password").value; // New <----
 
     if (!userName || !userLastName || !userEmail) {
         alert("All fields are required.");
@@ -77,6 +78,7 @@ document.querySelector("#profile-edit-form").addEventListener("submit", async fu
                 user_name: userName,
                 user_last_name: userLastName,
                 user_email: userEmail,
+                current_password: currentPassword // New <----
             }),
         });
 
