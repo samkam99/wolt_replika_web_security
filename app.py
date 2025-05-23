@@ -2,13 +2,17 @@ from flask import Flask, session, render_template, redirect, url_for, make_respo
 from flask_session import Session
 from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
+from dotenv import load_dotenv
 import x
 import uuid 
 import time
 import redis
 import os
+import secrets #for CSRF protection
+
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
+
 from icecream import ic
 ic.configureOutput(prefix=f'***** | ', includeContext=True)
 
@@ -16,7 +20,17 @@ app = Flask(__name__)
 app.config['SESSION_TYPE'] = 'filesystem'  # or 'redis', etc.
 Session(app)
 
-app.secret_key = "your_secret_key"
+load_dotenv()
+app.secret_key = os.getenv("SECRET_KEY")
+
+##############################
+##############################
+##############################
+
+@app.before_request
+def set_csrf_token():
+    if 'csrf_token' not in session:
+        session['csrf_token'] = secrets.token_hex(16)
 
 limiter = Limiter(
     key_func=get_remote_address,
@@ -605,6 +619,7 @@ def _________POST_________(): pass
 
 @app.post("/logout")
 def logout():
+    x.check_csrf_token()
     # ic("#"*30)
     # ic(session)
     session.pop("user", None)
@@ -620,6 +635,8 @@ def logout():
 @x.no_cache
 def signup():
     try:
+        x.check_csrf_token()
+
         user_name = x.validate_user_name()
         user_last_name = x.validate_user_last_name()
         user_email = x.validate_user_email()
@@ -678,6 +695,7 @@ def signup():
 def login():
     print("LOGIN ROUTE HIT")  # Add this line
     try:
+        x.check_csrf_token() 
         # Get the user's email and password from the form
         user_email = x.validate_user_email()
         user_password = x.validate_user_password()
@@ -756,6 +774,7 @@ def login():
 @app.post("/assign-role")
 def assign_role():
     try:
+        x.check_csrf_token()
         # Ensure user is logged in
         user = session.get("user")
         if not user:
@@ -831,6 +850,8 @@ def assign_role():
 @app.post("/items")
 def create_item():
     try:
+        x.check_csrf_token()
+
         # Get user details from the session
         user = session.get("user")
         if not user:
@@ -914,6 +935,7 @@ def update_profile():
     db_conn = None
     cursor = None
     try:
+        x.check_csrf_token()
         # Get user details from the session
         user = session.get("user")
         if not user:
@@ -923,14 +945,26 @@ def update_profile():
         user_name = x.validate_user_name()
         user_last_name = x.validate_user_last_name()
         user_email = x.validate_user_email()
-
+        current_password = request.form.get("current_password", "") # New <----
 
         # Validate fields
-        if not user_name or not user_last_name or not user_email:
+        if not user_name or not user_last_name or not user_email or not current_password:
             return make_response({"error": "All fields are required."}, 400)
 
         # Connect to the database
         db_conn, cursor = x.db()
+
+        # Verify current password against stored hash
+        cursor.execute(
+            "SELECT user_password FROM users WHERE user_pk = %s",
+            (user_id,)
+        )
+        row = cursor.fetchone()
+        if not row or not check_password_hash(row["user_password"], current_password):
+            # close and bail out
+            cursor.close()
+            db_conn.close()
+            return make_response({"error": "Current password is incorrect."}, 403)
 
         # Update user information in the database
         query = """
@@ -962,6 +996,8 @@ def update_profile():
 ##############################
 @app.post("/add_to_cart")
 def add_to_cart():
+    x.check_csrf_token()
+
     item_pk = request.json.get('item_pk')
     item_title = request.json.get('item_title')
     item_price = request.json.get('item_price')
@@ -996,6 +1032,8 @@ def add_to_cart():
 ##############################
 @app.post("/remove_from_cart")
 def remove_from_cart():
+    x.check_csrf_token()
+
     if request.is_json:
         item_pk = request.json.get('item_pk')
         ic(f"Received item_pk: {item_pk}")  # Debugging
@@ -1016,6 +1054,8 @@ def remove_from_cart():
 @app.post("/order")
 def order():
     try:
+        x.check_csrf_token()
+
         if not session.get("user", ""): 
             return redirect(url_for("view_login"))
         user = session.get("user")
@@ -1052,6 +1092,7 @@ def reset_password():
     Sends a reset link to the user's email if the email exists.
     """
     try:
+        x.check_csrf_token()
         # Validate the user's email input
         user_email = x.validate_user_email()
 
@@ -1108,6 +1149,7 @@ def handle_password_reset(reset_key):
     """
     print(request.form)
     try:
+        x.check_csrf_token()
         # CHANGES START: Get both new password fields from the form
         # new_password = request.form.get("new_password")
         # confirm_password = request.form.get("confirm_password")
