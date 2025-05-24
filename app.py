@@ -18,6 +18,8 @@ ic.configureOutput(prefix=f'***** | ', includeContext=True)
 
 app = Flask(__name__)
 app.config['SESSION_TYPE'] = 'filesystem'  # or 'redis', etc.
+app.config["SESSION_COOKIE_HTTPONLY"] = True
+app.config["SESSION_COOKIE_SECURE"] = True
 Session(app)
 
 load_dotenv()
