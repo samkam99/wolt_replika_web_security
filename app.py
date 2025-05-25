@@ -563,6 +563,7 @@ def logout():
 
 ##############################
 @app.post("/signup")
+@limiter.limit("3 per minute")
 @x.no_cache
 def signup():
     try:
@@ -703,6 +704,8 @@ def login():
 
 ##############################
 @app.post("/assign-role")
+@limiter.limit("5 per minute")
+
 def assign_role():
     db = cursor = None  # Initialize to avoid UnboundLocalError
     try:
@@ -859,7 +862,9 @@ def create_item():
 ##############################
 
 
+
 @app.post("/update-profile")
+@limiter.limit("10 per minute")
 def update_profile():
     db_conn = None
     cursor = None
@@ -1013,7 +1018,9 @@ def order():
 
 
 ################## POST RESET PASSWORD  #########
+
 @app.post("/reset_password")
+@limiter.limit("3 per minute")
 @x.no_cache
 def reset_password():
     """
@@ -1439,6 +1446,8 @@ def _________DELETE_________(): pass
 
 ##############################
 @app.delete("/users/<user_pk>")
+@limiter.limit("2 per minute")
+
 def user_delete(user_pk):
     try:
         # Ensure the user is logged in
@@ -1517,6 +1526,8 @@ def user_delete(user_pk):
 
 ##############################
 @app.delete("/items/delete/<item_pk>")
+@limiter.limit("5 per minute")
+
 def item_delete(item_pk):
     try:
         # Ensure user is logged in
@@ -1606,6 +1617,7 @@ def _________BRIDGE_________(): pass
 
 ##############################
 @app.get("/verify/<verification_key>")
+@limiter.limit("10 per minute")
 @x.no_cache
 def verify_user(verification_key):
     try:
